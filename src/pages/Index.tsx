@@ -6,10 +6,10 @@ const Index = () => {
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Find Your Perfect Domain Name
+            Check Domain & Username Availability
           </h1>
           <p className="text-lg text-gray-600">
-            Check domain availability across multiple TLDs instantly
+            Search across domains and social media platforms instantly
           </p>
         </div>
         <DomainSearch />
