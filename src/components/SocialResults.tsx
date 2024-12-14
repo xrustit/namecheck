@@ -1,6 +1,7 @@
 import { Check, X, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Facebook, Instagram, Linkedin } from "lucide-react";
 
 interface SocialResultsProps {
   username: string;
@@ -25,6 +26,21 @@ const SOCIAL_PLATFORMS = [
       </svg>
     ),
     url: "x.com" 
+  },
+  { 
+    name: "Facebook",
+    icon: () => <Facebook className="h-6 w-6 text-gray-600" />,
+    url: "facebook.com"
+  },
+  { 
+    name: "Instagram",
+    icon: () => <Instagram className="h-6 w-6 text-gray-600" />,
+    url: "instagram.com"
+  },
+  { 
+    name: "LinkedIn",
+    icon: () => <Linkedin className="h-6 w-6 text-gray-600" />,
+    url: "linkedin.com"
   },
   { 
     name: "Rutube",
