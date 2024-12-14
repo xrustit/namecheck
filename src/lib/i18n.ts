@@ -11,7 +11,8 @@ export const translations = {
     available: 'Available',
     taken: 'Taken',
     year: 'year',
-    loading: 'Checking...'
+    loading: 'Checking...',
+    buy: 'Buy'
   },
   ru: {
     title: 'Проверка доступности доменов и имен пользователей',
@@ -23,6 +24,7 @@ export const translations = {
     available: 'Доступен',
     taken: 'Занят',
     year: 'год',
-    loading: 'Проверка...'
+    loading: 'Проверка...',
+    buy: 'Купить'
   }
 };

@@ -1,5 +1,6 @@
-import { Check, X, Loader2 } from "lucide-react";
+import { Check, X, Loader2, ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 
@@ -20,17 +21,17 @@ const getEnTlds = () => [
   "space", "club", "info", "biz", "pro", "name", "company", "team", "cloud"
 ];
 
-async function fetchDomainPrices(isRussian: boolean) {
-  // In a real implementation, this would fetch prices from reg.ru API
-  // For now, we'll simulate with random prices
-  const tlds = isRussian ? getRuTlds() : getEnTlds();
-  return tlds.reduce((acc, tld) => {
-    // Random price between 10-50 USD/RUB
-    const basePrice = Math.floor(Math.random() * 40) + 10;
-    // Convert to rubles for Russian version (approximate exchange rate)
-    acc[tld] = isRussian ? basePrice * 90 : basePrice;
-    return acc;
-  }, {} as Record<string, number>);
+async function fetchDomainPrices(domain: string, isRussian: boolean) {
+  try {
+    // This is a placeholder for the actual reg.ru API integration
+    // You would need to implement the actual API call here
+    const response = await fetch(`https://www.reg.ru/api/check_domains?domains=${domain}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching domain prices:', error);
+    return null;
+  }
 }
 
 const DomainResults = ({ searchTerm, isLoading }: DomainResultsProps) => {
@@ -39,49 +40,78 @@ const DomainResults = ({ searchTerm, isLoading }: DomainResultsProps) => {
   const TLDS = isRussian ? getRuTlds() : getEnTlds();
   
   const { data: prices } = useQuery({
-    queryKey: ['domain-prices', language],
-    queryFn: () => fetchDomainPrices(isRussian),
+    queryKey: ['domain-prices', language, searchTerm],
+    queryFn: () => fetchDomainPrices(searchTerm, isRussian),
+    enabled: !!searchTerm,
   });
 
-  // Simulate random availability
+  // Simulate random availability (replace with actual API response)
   const isAvailable = (tld: string) => {
     return Math.random() > 0.5;
   };
 
+  const getBuyLink = (domain: string) => {
+    return `https://www.reg.ru/buy/domains/?query=${domain}`;
+  };
+
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      {TLDS.map((extension) => (
-        <Card
-          key={extension}
-          className={`p-4 fade-in flex items-center justify-between ${
-            isLoading ? "opacity-75" : ""
-          }`}
-        >
-          <div className="flex items-center space-x-4">
-            <div className="text-lg font-medium">
-              {searchTerm}.{extension}
-            </div>
-            {isLoading ? (
-              <Loader2 className="h-5 w-5 animate-spin text-primary" />
-            ) : isAvailable(extension) ? (
-              <div className="flex items-center text-green-500">
-                <Check className="h-5 w-5 mr-1" />
-                <span>{t('available')}</span>
+      {TLDS.map((extension) => {
+        const available = isAvailable(extension);
+        const domain = `${searchTerm}.${extension}`;
+        
+        return (
+          <Card
+            key={extension}
+            className={`p-4 fade-in flex items-center justify-between ${
+              isLoading ? "opacity-75" : ""
+            }`}
+          >
+            <div className="flex items-center space-x-4">
+              <div className="text-lg font-medium">
+                {domain}
               </div>
-            ) : (
-              <div className="flex items-center text-red-500">
-                <X className="h-5 w-5 mr-1" />
-                <span>{t('taken')}</span>
+              {isLoading ? (
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              ) : available ? (
+                <div className="flex items-center text-green-500">
+                  <Check className="h-5 w-5 mr-1" />
+                  <span>{t('available')}</span>
+                </div>
+              ) : (
+                <div className="flex items-center text-red-500">
+                  <X className="h-5 w-5 mr-1" />
+                  <span>{t('taken')}</span>
+                </div>
+              )}
+            </div>
+            {!isLoading && (
+              <div className="flex items-center gap-2">
+                {available && prices?.[extension] && (
+                  <span className="text-lg font-semibold text-primary">
+                    {prices[extension]}{isRussian ? '₽' : '$'}/{t('year')}
+                  </span>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  asChild
+                >
+                  <a 
+                    href={getBuyLink(domain)} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1"
+                  >
+                    {t('buy')}
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
               </div>
             )}
-          </div>
-          {!isLoading && isAvailable(extension) && prices && (
-            <div className="text-lg font-semibold text-primary">
-              {prices[extension]}{isRussian ? '₽' : '$'}/{t('year')}
-            </div>
-          )}
-        </Card>
-      ))}
+          </Card>
+        );
+      })}
     </div>
   );
 };
