@@ -8,11 +8,11 @@ interface SocialResultsProps {
 }
 
 const SOCIAL_PLATFORMS = [
-  { name: "Facebook", icon: Facebook, url: "facebook.com" },
+  { name: "VK", icon: Globe, url: "vk.com" },
   { name: "X", icon: Twitter, url: "x.com" },
+  { name: "Facebook", icon: Facebook, url: "facebook.com" },
   { name: "Instagram", icon: Instagram, url: "instagram.com" },
   { name: "LinkedIn", icon: Linkedin, url: "linkedin.com" },
-  { name: "VK", icon: Globe, url: "vk.com" },
   { name: "Rutube", icon: Globe, url: "rutube.ru" },
   { name: "Odnoklassniki", icon: Globe, url: "ok.ru" },
   { name: "Telegram", icon: Globe, url: "t.me" }

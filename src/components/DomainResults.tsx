@@ -8,27 +8,39 @@ interface DomainResultsProps {
   isLoading: boolean;
 }
 
-const TLDS = [
-  "com", "net", "org", "io", "co", "app", "dev", "me", "ai", "tech", "blog", "store",
-  "ru", "рф", "su", "москва", "online", "site", "website", "space", "club", "info",
-  "biz", "pro", "name", "company", "team", "cloud"
+const getRuTlds = () => [
+  "ru", "рф", "su", "москва", "com", "net", "org", "io", "co", "app", 
+  "dev", "me", "ai", "tech", "blog", "store", "online", "site", "website", 
+  "space", "club", "info", "biz", "pro", "name", "company", "team", "cloud"
 ];
 
-async function fetchDomainPrices() {
+const getEnTlds = () => [
+  "com", "net", "org", "io", "co", "app", "dev", "me", "ai", "tech", 
+  "blog", "store", "ru", "рф", "su", "москва", "online", "site", "website", 
+  "space", "club", "info", "biz", "pro", "name", "company", "team", "cloud"
+];
+
+async function fetchDomainPrices(isRussian: boolean) {
   // In a real implementation, this would fetch prices from reg.ru API
   // For now, we'll simulate with random prices
-  return TLDS.reduce((acc, tld) => {
-    acc[tld] = Math.floor(Math.random() * 50) + 10;
+  const tlds = isRussian ? getRuTlds() : getEnTlds();
+  return tlds.reduce((acc, tld) => {
+    // Random price between 10-50 USD/RUB
+    const basePrice = Math.floor(Math.random() * 40) + 10;
+    // Convert to rubles for Russian version (approximate exchange rate)
+    acc[tld] = isRussian ? basePrice * 90 : basePrice;
     return acc;
   }, {} as Record<string, number>);
 }
 
 const DomainResults = ({ searchTerm, isLoading }: DomainResultsProps) => {
   const { t, language } = useLanguage();
+  const isRussian = language === 'ru';
+  const TLDS = isRussian ? getRuTlds() : getEnTlds();
   
   const { data: prices } = useQuery({
-    queryKey: ['domain-prices'],
-    queryFn: fetchDomainPrices,
+    queryKey: ['domain-prices', language],
+    queryFn: () => fetchDomainPrices(isRussian),
   });
 
   // Simulate random availability
@@ -65,7 +77,7 @@ const DomainResults = ({ searchTerm, isLoading }: DomainResultsProps) => {
           </div>
           {!isLoading && isAvailable(extension) && prices && (
             <div className="text-lg font-semibold text-primary">
-              {prices[extension]}₽/{t('year')}
+              {prices[extension]}{isRussian ? '₽' : '$'}/{t('year')}
             </div>
           )}
         </Card>
