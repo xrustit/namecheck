@@ -26,9 +26,6 @@ const SOCIAL_PLATFORMS = [
     ),
     url: "x.com" 
   },
-  { name: "Facebook", icon: Facebook, url: "facebook.com" },
-  { name: "Instagram", icon: Instagram, url: "instagram.com" },
-  { name: "LinkedIn", icon: Linkedin, url: "linkedin.com" },
   { 
     name: "Rutube",
     icon: () => (
@@ -76,7 +73,7 @@ const SocialResults = ({ username, isLoading }: SocialResultsProps) => {
           }`}
         >
           <div className="flex items-center space-x-4">
-            <Icon className="h-6 w-6 text-gray-600" />
+            <Icon />
             <div className="text-lg font-medium">
               {url === "t.me" ? `${url}/${username}` : `${url}/${username}`}
             </div>
