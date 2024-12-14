@@ -1,5 +1,6 @@
 import { Check, X, Loader2, Facebook, Twitter, Instagram, Linkedin, Globe } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface SocialResultsProps {
   username: string;
@@ -8,13 +9,18 @@ interface SocialResultsProps {
 
 const SOCIAL_PLATFORMS = [
   { name: "Facebook", icon: Facebook, url: "facebook.com" },
-  { name: "Twitter", icon: Twitter, url: "twitter.com" },
+  { name: "X", icon: Twitter, url: "x.com" },
   { name: "Instagram", icon: Instagram, url: "instagram.com" },
   { name: "LinkedIn", icon: Linkedin, url: "linkedin.com" },
-  { name: "Website", icon: Globe, url: "website" }
+  { name: "VK", icon: Globe, url: "vk.com" },
+  { name: "Rutube", icon: Globe, url: "rutube.ru" },
+  { name: "Odnoklassniki", icon: Globe, url: "ok.ru" },
+  { name: "Telegram", icon: Globe, url: "t.me" }
 ];
 
 const SocialResults = ({ username, isLoading }: SocialResultsProps) => {
+  const { t } = useLanguage();
+
   // Simulate random availability
   const isAvailable = (platform: string) => {
     return Math.random() > 0.5;
@@ -32,19 +38,19 @@ const SocialResults = ({ username, isLoading }: SocialResultsProps) => {
           <div className="flex items-center space-x-4">
             <Icon className="h-6 w-6 text-gray-600" />
             <div className="text-lg font-medium">
-              {url === "website" ? `${username}.com` : `${url}/${username}`}
+              {url === "t.me" ? `${url}/${username}` : `${url}/${username}`}
             </div>
             {isLoading ? (
               <Loader2 className="h-5 w-5 animate-spin text-primary" />
             ) : isAvailable(name) ? (
               <div className="flex items-center text-green-500">
                 <Check className="h-5 w-5 mr-1" />
-                <span>Available</span>
+                <span>{t('available')}</span>
               </div>
             ) : (
               <div className="flex items-center text-red-500">
                 <X className="h-5 w-5 mr-1" />
-                <span>Taken</span>
+                <span>{t('taken')}</span>
               </div>
             )}
           </div>

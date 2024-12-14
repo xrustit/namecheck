@@ -5,11 +5,13 @@ import { Search } from "lucide-react";
 import DomainResults from "./DomainResults";
 import SocialResults from "./SocialResults";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const DomainSearch = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const { t } = useLanguage();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +32,7 @@ const DomainSearch = () => {
         <div className="flex-1">
           <Input
             type="text"
-            placeholder="Enter name to check availability"
+            placeholder={t('searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full h-12 text-lg"
@@ -42,15 +44,15 @@ const DomainSearch = () => {
           disabled={!searchTerm || isSearching}
         >
           <Search className="mr-2 h-4 w-4" />
-          Search
+          {t('searchButton')}
         </Button>
       </form>
 
       {hasSearched && (
         <Tabs defaultValue="domains" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="domains">Domains</TabsTrigger>
-            <TabsTrigger value="social">Social Media</TabsTrigger>
+            <TabsTrigger value="domains">{t('domains')}</TabsTrigger>
+            <TabsTrigger value="social">{t('social')}</TabsTrigger>
           </TabsList>
           <TabsContent value="domains">
             <DomainResults 
