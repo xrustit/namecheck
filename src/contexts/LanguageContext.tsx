@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Language, translations } from '@/lib/i18n';
 
 type LanguageContextType = {
@@ -9,8 +9,22 @@ type LanguageContextType = {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+const getCISCountries = () => [
+  'RU', 'BY', 'KZ', 'KG', 'TJ', 'UZ', 'AM', 'AZ', 'MD'
+];
+
+const getDefaultLanguage = (): Language => {
+  try {
+    const userRegion = new Intl.DateTimeFormat().resolvedOptions().locale.split('-')[1];
+    return getCISCountries().includes(userRegion) ? 'ru' : 'en';
+  } catch (error) {
+    console.log('Error detecting region:', error);
+    return 'en';
+  }
+};
+
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>(getDefaultLanguage());
 
   const t = (key: keyof typeof translations.en) => {
     return translations[language][key];
